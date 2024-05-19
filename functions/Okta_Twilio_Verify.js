@@ -1,8 +1,27 @@
-
 exports.handler = function(context, event, callback) {
 
+    const auth_secret=event.request.headers.auth_secret;
+    if (context.auth_secret!==auth_secret) {
+      //fail API authentication, return an error
+      const errorResponse={
+                      "error":{
+                        "errorSummary":"authentication failed",
+                        "errorCauses":[
+                          {
+                            "errorSummary":"authentication failed",
+                            "reason":"authentication failed",
+                            "location":""
+                          }
+                        ]
+                      }
+                      }
+      console.log(errorResponse);
+      callback(errorResponse);
+    } else {
+
     const verify_sid=context.VERIFY_SID;
-    
+    console.log(event.request.headers);
+
     var channel=event.data.messageProfile.deliveryChannel.toLowerCase()==='sms'?'sms':'call'; //SMS or voice call
     var to=event.data.messageProfile.phoneNumber;
     var code=event.data.messageProfile.otpCode;
@@ -18,6 +37,8 @@ exports.handler = function(context, event, callback) {
             customCode:code,
             })
         .then((verification) => {
+            console.log(verification);
+            console.log(verification.sendCodeAttempts);
 
             const response={
                   "commands":[
@@ -53,5 +74,6 @@ exports.handler = function(context, event, callback) {
                                   }
             callback(errorResponse);
         })
+    }
     
 };
