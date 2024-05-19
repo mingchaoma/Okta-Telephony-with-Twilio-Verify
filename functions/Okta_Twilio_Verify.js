@@ -6,8 +6,6 @@ exports.handler = function(context, event, callback) {
     var channel=event.data.messageProfile.deliveryChannel.toLowerCase()==='sms'?'sms':'call'; //SMS or voice call
     var to=event.data.messageProfile.phoneNumber;
     var code=event.data.messageProfile.otpCode;
-
-    console.log("To phone number is " + to);
     
     var client=context.getTwilioClient();
 
@@ -20,8 +18,6 @@ exports.handler = function(context, event, callback) {
             customCode:code,
             })
         .then((verification) => {
-            console.log(verification);
-            console.log(verification.sendCodeAttempts);
 
             const response={
                   "commands":[
