@@ -24,6 +24,7 @@ Please [contact Twilio Sales](https://www.twilio.com/help/sales) to enable custo
 Variable | Value 
 --- | --- 
 `VERIFY_SID`| VAxxxxxxxxx (the Verify service that you created at previous steps) 
+`auth_secret`| please create a random string and note it down, this will be used to authenticate the API call from Okta 
 
 6. Save and Deploy
 7. Take a note of your Twilio Function URL, in this example, it will be something like https://Okta-xxxx.twil.io/Okta_MFA. This is the URL that you will use when setting up the Okta telephony inline hook
@@ -40,9 +41,11 @@ The following steps explain how to use Okta API to configure telephony inline ho
    * Name: give it a name, for example, Twilio Verify
    * URL: this is the URL of the Twilio Function that you created above (https://Okta-xxxx.twil.io/Okta_MFA)
    * Authentication field: auth_secret
-   * Authentication secret: please create a random password and note it down
+   * Authentication secret: the random string that you created when creating the Twilio function (the value of auth_secret)
    * Custom Headers: add any custom header (in our case, we do not use any customer header)
 4. Click Save and make sure the telephony inline hook is in active status
+
+Please note: the Authentication field and Autehntication secret will be used to authenticate the API call from Okta. Make sure that they are matched with the key/value pair created in Twilio Function.
 
 ### Test the telephony inline hook (Okta Classic Engine) 
 1. In Inline Hooks, find the Active telephony inline hook and click ActionsPreview. The Preview tab of the inline hook opens.
