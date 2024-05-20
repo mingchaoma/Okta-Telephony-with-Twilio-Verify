@@ -1,5 +1,5 @@
 # Okta-Telephony-with-Twilio-Verify
-Okta has made an [announcement](https://support.okta.com/help/s/article/bring-your-own-telephony-required-for-sms-and-voice) that from 15h Sep. 2024 all customers must bring their own telephoney provider via Oktas Telephony Inline Hook in order to coninute to send SMS and Voice OTP for both MFA and non-MFA use case (authentication, account unlock and password reset). 
+Okta has made an [announcement](https://support.okta.com/help/s/article/bring-your-own-telephony-required-for-sms-and-voice) that from 15h Sep. 2024 all customers must bring their own telephony provider via Okta Telephony Inline Hook in order to coninute to send SMS and Voice OTP for both MFA and non-MFA use case (authentication, account unlock and password reset). 
 
 This project will show you how to setup Okta telephony inline hook to use [Twilio Verify](https://www.twilio.com/docs/verify/api) as the telephony provider. It supports both SMS and voice channels. 
 
