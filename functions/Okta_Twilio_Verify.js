@@ -1,79 +1,56 @@
-exports.handler = function(context, event, callback) {
-
-    const auth_secret=event.request.headers.auth_secret;
-    if (context.auth_secret!==auth_secret) {
-      //fail API authentication, return an error
-      const errorResponse={
-                      "error":{
-                        "errorSummary":"authentication failed",
-                        "errorCauses":[
-                          {
-                            "errorSummary":"authentication failed",
-                            "reason":"authentication failed",
-                            "location":""
-                          }
-                        ]
-                      }
-                      }
-      console.log(errorResponse);
-      callback(errorResponse);
-    } else {
-
-    const verify_sid=context.VERIFY_SID;
+exports.handler = async function(context, event, callback) {
+  try {
     console.log(event.request.headers);
 
-    var channel=event.data.messageProfile.deliveryChannel.toLowerCase()==='sms'?'sms':'call'; //SMS or voice call
-    var to=event.data.messageProfile.phoneNumber;
-    var code=event.data.messageProfile.otpCode;
-    
-    var client=context.getTwilioClient();
-
-    //call Verify API
-    client.verify.v2.services(verify_sid)
-        .verifications
-        .create({
-            to:to,
-            channel:channel,
-            customCode:code,
-            })
-        .then((verification) => {
-            console.log(verification);
-            console.log(verification.sendCodeAttempts);
-
-            const response={
-                  "commands":[
-                    {
-                      "type":"com.okta.telephony.action",
-                      "value":[
-                        {
-                          "status":"SUCCESSFUL",
-                          "provider":"Twilio Verify",
-                          "transactionId":verification.sid,
-                          "transactionMetadata":verification.sendCodeAttempts.at(-1).attempt_sid
-                        }
-                      ]
-                    }
-                  ]
-                }
-
-            callback(null, response);
-            })
-        .catch ((error)=>{
-            console.log ("Error is : " + error);
-            const errorResponse={
-                                  "error":{
-                                    "errorSummary":error.message,
-                                    "errorCauses":[
-                                      {
-                                        "errorSummary":error.status,
-                                        "reason":error.moreInfo,
-                                        "location":""
-                                      }
-                                    ]
-                                  }
-                                  }
-            callback(errorResponse);
-        })
+    if (context.auth_secret !== event.request.headers.auth_secret) {
+      throw new Error("Authentication failed");
     }
-    
+
+    let client = context.getTwilioClient();
+
+    // https://developer.okta.com/docs/reference/telephony-hook/#data-messageprofile
+    let to = event.data.messageProfile.phoneNumber;
+    let customCode = event.data.messageProfile.otpCode;
+    let channel =
+      event.data.messageProfile.deliveryChannel.toLowerCase() === "sms" ?
+      "sms" :
+      "call";
+
+    let verification = await client.verify.v2
+      .services(context.VERIFY_SID)
+      .verifications.create({
+        to,
+        channel,
+        customCode
+      });
+
+    console.log(verification);
+    console.log(verification.sendCodeAttempts);
+
+    let response = {
+      commands: [{
+        type: "com.okta.telephony.action",
+        value: [{
+          status: "SUCCESSFUL",
+          provider: "Twilio Verify",
+          transactionId: verification.sid,
+          transactionMetadata: verification.sendCodeAttempts.at(-1).attempt_sid,
+        }],
+      }],
+    };
+
+    return callback(null, response);
+  } catch (error) {
+    console.error("Error: " + error);
+    let errorResponse = {
+      error: {
+        errorSummary: error.message,
+        errorCauses: [{
+          errorSummary: error.status || error.message,
+          reason: error.moreInfo || error.message,
+        }],
+      },
+    };
+    return callback(null, errorResponse);
+  }
 };
