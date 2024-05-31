@@ -1,3 +1,6 @@
+
+Note: for detail step-by-step instruction, please read [this blog post](https://www.twilio.com/en-us/blog/okta-byot-verify)
+
 # Okta-Telephony-with-Twilio-Verify
 Okta has made an [announcement](https://support.okta.com/help/s/article/bring-your-own-telephony-required-for-sms-and-voice) that from 15th Sep. 2024 all customers must bring their own telephony provider via Okta Telephony Inline Hook in order to coninute to send SMS and Voice OTP for both MFA and non-MFA use case (authentication, account unlock and password reset). 
 
