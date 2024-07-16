@@ -1,4 +1,3 @@
-
 exports.handler = async function(context, event, callback) {
 try {
     
@@ -28,8 +27,8 @@ try {
     const userid=mfa_event.actor?.id;//grab user id
     const okta=require('@okta/okta-sdk-nodejs');
     const OktaClient= new okta.Client({ orgUrl: oktaBaseUrl, token: api_token });
-    let user = await OktaClient.getUser(userid); //call Okta user API
-    const phone_number=user.profile.mobilePhone; //grab phone number
+    let user = await OktaClient.userApi.getUser({ userId: userid }); //call Okta user API
+    const phone_number=user.profile.mobilePhone.replace(/\s+/g, ''); //grab phone numberand remove space in between
     console.log ("user phone number: ", phone_number);
    //call Verify feedback API using phone number
     let client = context.getTwilioClient();
