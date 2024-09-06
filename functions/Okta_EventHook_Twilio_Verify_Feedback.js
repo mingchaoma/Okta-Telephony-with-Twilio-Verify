@@ -1,3 +1,4 @@
+
 exports.handler = async function(context, event, callback) {
 try {
     
@@ -21,9 +22,9 @@ try {
     console.log ("mfa_event: ", mfa_event);
     let channel=null;
     //check payload of "user.authentication.auth_via_mfa" and "user.mfa.factor.activate" for SMS OTP and CALL OTP
-    if (mfa_event && mfa_event.outcome?.result === 'SUCCESS'  && (mfa_event.debugContext?.debugData?.factor === 'SMS_FACTOR' || mfa_event.outcome?.reason.includes("SMS_FACTOR"))) 
+    if (mfa_event && mfa_event.outcome?.result === 'SUCCESS'  && (mfa_event.debugContext?.debugData?.factor === 'SMS_FACTOR' || mfa_event.outcome?.reason?.includes("SMS_FACTOR"))) 
     {channel="sms"} //SMS OTP is used
-    else if   (mfa_event && mfa_event.outcome?.result === 'SUCCESS'  && (mfa_event.debugContext?.debugData?.factor === 'CALL_FACTOR' ||mfa_event.outcome?.reason.includes("CALL_FACTOR"))) 
+    else if   (mfa_event && mfa_event.outcome?.result === 'SUCCESS'  && (mfa_event.debugContext?.debugData?.factor === 'CALL_FACTOR' ||mfa_event.outcome?.reason?.includes("CALL_FACTOR"))) 
     {channel="call"} //call OTP is used
 
     if (channel!==null)
